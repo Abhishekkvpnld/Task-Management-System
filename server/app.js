@@ -13,7 +13,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+    origin: [process.env.FRONTEND_URL,"http://localhost:3000"],
     credentials: true,
   })
 );
@@ -28,7 +28,7 @@ app.use("/api/admin", adminRoute);
 
 app.get("/", (req, res) => {
   res.send("Server running...🚀");
-});
+});  
 
 const PORT = process.env.PORT;
 

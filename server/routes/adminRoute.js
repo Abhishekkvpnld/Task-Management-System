@@ -6,7 +6,6 @@ import {
   allUsers,
   deleteUser, 
   fetchUserData,
-  searchUser,
   userRoleUpdate,
   userStatusUpdate,
 } from "../controller/adminController.js";
@@ -19,7 +18,6 @@ router.get("/users", jwtAuth, allUsers);
 router.put("/update-role", jwtAuth, userRoleUpdate);
 router.put("/update-status", jwtAuth, userStatusUpdate);
 router.delete("/delete-user/:id", jwtAuth, deleteUser);
-router.get("/search", jwtAuth, searchUser);
 router.get("/logout", jwtAuth, adminLogout);
-
+ 
 export default router;

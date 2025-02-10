@@ -28,6 +28,7 @@ export const addNewUser = async (req, res) => {
 
     res.status(201).json({
       success: true,
+      data:user,
       error: false,
       message: "User Created Successfully...✅✅",
     });

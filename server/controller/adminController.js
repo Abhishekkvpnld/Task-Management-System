@@ -16,9 +16,6 @@ export const adminLogin = async (req, res) => {
       throw new Error("User Not Registered...🤦‍♂️");
     }
 
-    if (checkUser.role !== "Admin") {
-      throw new Error("Permision denied ,You are not an Admin...❌");
-    }
 
     const CheckPassword = await bcrypt.compare(password, checkUser.password);
 
@@ -46,7 +43,7 @@ export const adminLogin = async (req, res) => {
 
     const tokenOption = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "None",
     };
 
@@ -259,51 +256,6 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-export const searchUser = async (req, res) => {
-  try {
-    const { username } = req.query;
-    const userId = req.user._id;
-
-    if (!username) {
-      throw new Error("Please enter a username to search...");
-    }
-
-    const requestingUser = await userModel.findById(userId);
-    if (!requestingUser) {
-      throw new Error("Requesting user not found...❌");
-    }
-
-    if (requestingUser.role !== "Admin") {
-      throw new Error("Permission denied. Only Admins can update roles.");
-    }
-
-    const regExp = new RegExp(username, "i");
-    const allDoc = await userModel.find({ userName: { $regex: regExp } });
-
-    if (allDoc.length === 0) {
-      return res.status(200).json({
-        success: true,
-        error: false,
-        message: "No users found with the given username...❌",
-        data: allDoc || [],
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      error: false,
-      data: allDoc,
-      message: "user found✅",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      error: true,
-      message: error.message,
-    });
-  }
-};
 
 export const adminLogout = async (req, res) => {
   try {
