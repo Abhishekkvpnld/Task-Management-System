@@ -1,23 +1,39 @@
 import express from "express";
-// import cookieParser from "cookie-parser";
 import cors from "cors";
-import morgan from "morgan";
 import dotenv from "dotenv";
+import dbConnection from "./config/dbConnection.js";
+import morgan from "morgan";
+import userRoute from "./routes/userRoute.js";
+import adminRoute from "./routes/adminRoute.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
-const PORT = 4000;
 
-app.use(express.urlencoded());
+app.use(
+  cors({
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(cors());
 app.use(morgan("dev"));
+app.use(cookieParser());
 
-app.use("/", (req, res) => {
-  res.send("Server running...");
+//Routes
+app.use("/api/user", userRoute);
+app.use("/api/admin", adminRoute);
+
+
+app.get("/", (req, res) => {
+  res.send("Server running...🚀");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const PORT = process.env.PORT;
+
+dbConnection().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}...🚀🚀`);
+  });
 });
