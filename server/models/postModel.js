@@ -2,21 +2,27 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
-    title: {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
+    },
+    title: {
       type: String,
+      required: true,
     },
     description: {
-      required: true,
       type: String,
+      required: true,
     },
     due_date: {
-      required: true,
       type: Date,
+      required: true,
     },
     priority: {
-      required: true,
       type: String,
+      required: true,
+      enum: ["Low", "Medium", "High"]
     },
   },
   {

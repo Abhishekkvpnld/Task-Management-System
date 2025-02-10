@@ -1,5 +1,5 @@
 import express from "express";
-import { adminAuth } from "../middleware/jwtAuth.js";
+import { jwtAuth } from "../middleware/jwtAuth.js";
 import {
   adminLogin,
   adminLogout,
@@ -14,12 +14,12 @@ import {
 const router = express.Router();
 
 router.post("/login",adminLogin);
-router.get("/user", adminAuth, fetchUserData);
-router.get("/users", adminAuth, allUsers);
-router.put("/update-role", adminAuth, userRoleUpdate);
-router.put("/update-status", adminAuth, userStatusUpdate);
-router.delete("/delete-user/:id", adminAuth, deleteUser);
-router.get("/search", adminAuth, searchUser);
-router.get("/logout", adminAuth, adminLogout);
+router.get("/user", jwtAuth, fetchUserData);
+router.get("/users", jwtAuth, allUsers);
+router.put("/update-role", jwtAuth, userRoleUpdate);
+router.put("/update-status", jwtAuth, userStatusUpdate);
+router.delete("/delete-user/:id", jwtAuth, deleteUser);
+router.get("/search", jwtAuth, searchUser);
+router.get("/logout", jwtAuth, adminLogout);
 
 export default router;
