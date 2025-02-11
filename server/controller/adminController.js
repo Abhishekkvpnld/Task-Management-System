@@ -16,6 +16,12 @@ export const adminLogin = async (req, res) => {
       throw new Error("User Not Registered...🤦‍♂️");
     }
 
+    const response = {
+      username:checkUser.userName,
+      role: checkUser.role,
+      status: checkUser.status,
+
+    } 
 
     const CheckPassword = await bcrypt.compare(password, checkUser.password);
 
@@ -54,7 +60,7 @@ export const adminLogin = async (req, res) => {
         success: true,
         error: false,
         message: "Logged in Successfully...✅",
-        data: { user: checkUser, token },
+        data: { user: response, token },
       });
   } catch (error) {
     console.log(error);
@@ -64,7 +70,7 @@ export const adminLogin = async (req, res) => {
       message: error.message,
     });
   }
-};
+}; 
 
 export const fetchUserData = async (req, res) => {
   try {
@@ -281,3 +287,80 @@ export const adminLogout = async (req, res) => {
     });
   }
 };
+
+export const deleteAdminPost = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        error: true,
+        message: "Unauthorized. Please login first...",
+      });
+    }
+
+    const postId = req.params.id;
+
+    if (!postId) {
+      return res.status(400).json({
+        success: false,
+        error: true,
+        message: "Invalid request. Post ID is required.",
+      });
+    }
+
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        error: true,
+        message: "Post not found.",
+      });
+    }
+
+
+    await postModel.findByIdAndDelete(postId);
+
+    return res.status(200).json({
+      success: true,
+      error: false,
+      message: "Task Deleted Successfully...✅",
+    });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return res.status(500).json({
+      success: false,
+      error: true,
+      message: "Internal Server Error. Please try again later.",
+    });
+  }
+};
+
+
+export const fetchAllAdminPosts = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        error: true,
+        message: "Unauthorized. Please login first...",
+      });
+    }
+
+    const posts = await postModel.find();
+
+    return res.status(201).json({
+      success: true,
+      error: false,
+      data: posts,
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return res.status(500).json({
+      success: false,
+      error: true,
+      message: "Internal Server Error. Please try again later.",
+    });
+  }
+};
+

@@ -4,7 +4,9 @@ import {
   adminLogin,
   adminLogout,
   allUsers,
-  deleteUser, 
+  deleteAdminPost,
+  deleteUser,
+  fetchAllAdminPosts,
   fetchUserData,
   userRoleUpdate,
   userStatusUpdate,
@@ -12,12 +14,14 @@ import {
 
 const router = express.Router();
 
-router.post("/login",adminLogin);
+router.post("/login", adminLogin);
 router.get("/user", jwtAuth, fetchUserData);
 router.get("/users", jwtAuth, allUsers);
 router.put("/update-role", jwtAuth, userRoleUpdate);
 router.put("/update-status", jwtAuth, userStatusUpdate);
 router.delete("/delete-user/:id", jwtAuth, deleteUser);
-router.get("/logout", jwtAuth, adminLogout);
- 
+router.get("/logout", adminLogout);
+router.get("/all-posts", jwtAuth, fetchAllAdminPosts);
+router.delete("/delete/:id", jwtAuth, deleteAdminPost);
+
 export default router;

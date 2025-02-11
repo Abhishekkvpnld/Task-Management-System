@@ -13,22 +13,23 @@ const app = express();
 
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL,"http://localhost:3000"],
+    origin:"http://localhost:3000",
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(cookieParser());
 
 //Routes
 app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute);
 
-
 app.get("/", (req, res) => {
   res.send("Server running...🚀");
-});  
+});
 
 const PORT = process.env.PORT;
 

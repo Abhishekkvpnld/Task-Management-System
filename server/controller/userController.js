@@ -28,7 +28,7 @@ export const addNewUser = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data:user,
+      data: user,
       error: false,
       message: "User Created Successfully...✅✅",
     });
@@ -196,7 +196,7 @@ export const updatePost = async (req, res) => {
 
     const updatedPost = await postModel.findByIdAndUpdate(
       postId,
-      { title, description, due_date, priority },
+      { title, description, due_date:dueDate, priority },
       { new: true, runValidators: true }
     );
 
@@ -212,6 +212,66 @@ export const updatePost = async (req, res) => {
       success: false,
       error: true,
       message: error?.message,
+    });
+  }
+};
+
+export const fetchAllPosts = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        error: true,
+        message: "Unauthorized. Please login first...",
+      });
+    }
+
+    const posts = await postModel.find({ userId: req.user._id });
+
+    return res.status(201).json({
+      success: true,
+      error: false,
+      data: posts,
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return res.status(500).json({
+      success: false,
+      error: true,
+      message: "Internal Server Error. Please try again later.",
+    });
+  }
+};
+
+export const fetchPostById = async (req, res) => {
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        error: true,
+        message: "Unauthorized. Please login first...",
+      });
+    }
+
+    const postId = req.params.id;
+
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    return res.status(201).json({
+      success: true,
+      error: false,
+      data: post,
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return res.status(500).json({
+      success: false,
+      error: true,
+      message: "Internal Server Error. Please try again later.",
     });
   }
 };
